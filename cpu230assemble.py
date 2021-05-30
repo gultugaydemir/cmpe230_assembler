@@ -32,7 +32,7 @@ isInstr = True
 addressing_mode= ""
 operand=""
 bits = ""
-
+counter=0
 # Opening the input file prog.asm
 
 with open("prog.asm") as asmfile:
@@ -47,9 +47,20 @@ with open("prog.asm") as asmfile:
         if value in instr:          # The value is one of the instructions
             opcode = instr[value]
             isInstr = True
+            print(value)
+            print(counter)
+            counter+=1
+            
 
-        else:               
-            isInstr = False         # The value is either a label or a variable
+
+        elif value.__contains__(":"):               
+            isInstr = False       
+            operand = hex((counter-1) * 3)[2:]
+            print(operand)
+            
+        else:
+            isInstr = False
+            print(value)
 
         if isInstr == True:
             
@@ -70,4 +81,4 @@ with open("prog.asm") as asmfile:
                         addressing_mode = "10"
                     else: 
                         addressing_mode = "11"
-        
+                
