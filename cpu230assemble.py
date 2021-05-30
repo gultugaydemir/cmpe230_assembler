@@ -55,7 +55,7 @@ with open("prog.asm") as asmfile:
 
         elif value.__contains__(":"):               
             isInstr = False       
-            operand = hex((counter-1) * 3)[2:]
+            operand = hex((counter) * 3)[2:]
             print(operand)
             
         else:
