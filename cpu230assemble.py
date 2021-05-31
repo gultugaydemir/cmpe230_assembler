@@ -16,14 +16,12 @@ register = {'A':    "0001", 'B':    "0002", "C":    "0003",
 
 label = {}
 
-loc_counter = 0
 isInstr = True
 addressing_mode= ""
 operand=""
-bits = ""
 counter=0
 
-binFile = open("progss.bin", "w")
+binFile = open("prog.bin", "w")
 
 with open("prog.asm") as asm:
     for line in asm:
@@ -42,6 +40,7 @@ with open("prog.asm") as asm:
 
 
 with open("prog.asm") as asmFile:
+            
     for line in asmFile:
         line = line.split() 
         value = line[0]
@@ -96,5 +95,4 @@ with open("prog.asm") as asmFile:
             bin = '0b' + bopcode + baddressing_mode + boperand 
             ibin = int(bin[2:],2) ; 
             result = format(ibin, '06x')
-            print(result)
             binFile.write(result+"\n")          
