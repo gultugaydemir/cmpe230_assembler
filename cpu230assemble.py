@@ -96,4 +96,5 @@ with open("prog.asm") as asmFile:
             bin = '0b' + bopcode + baddressing_mode + boperand 
             ibin = int(bin[2:],2) ; 
             result = format(ibin, '06x')
+            print(result)
             binFile.write(result+"\n")          
