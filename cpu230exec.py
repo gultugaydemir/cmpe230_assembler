@@ -29,27 +29,27 @@ class Error(Exception):
 
 class OpcodeError(Error):
     def __init__(self):
-        super().__init__("Illegal opcode", 0)
+        super().__init__("Illegal opcode", -3)
 
 
 class AddrModeError(Error):
     def __init__(self):
-        super().__init__("Illegal addressing", 1)
+        super().__init__("Illegal addressing", -2)
 
 
 class RegisterError(Error):
     def __init__(self):
-        super().__init__("Non-existent register", 2)
+        super().__init__("Non-existent register", -1)
 
 
 class SetAddrError(Error):
     def __init__(self):
-        super().__init__("Set command to data", 2)
+        super().__init__("Set command to data", -1)
 
 
 class EndOfMemory(Error):
     def __init__(self):
-        super().__init__("End of memory access", 2)
+        super().__init__("End of memory access", -1)
 
 
 def not_op_16(val):
@@ -336,9 +336,11 @@ try:
         if not 0 < opcode <= len(executionArr):  # < 30:
             raise OpcodeError()
 
+        # Instructions have been read
+        regs[0] += 3
+
         # Index on array + 1 = Instruction code
         executionArr[opcode-1](addr_mode, operand)
-        regs[0] += 3
 
 except Error as err:
     print(err.msg)
