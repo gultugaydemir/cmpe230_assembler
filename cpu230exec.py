@@ -233,18 +233,9 @@ def cmp(addr_mode, operand):
     set_flags(value)
 
 def jmp(addr_mode, operand):
-    if addr_mode == 2:
-        if not 0 <= operand < 27:
-            raise RegisterError
-        if regs[operand] >= MAX_VAL-1:
-            raise EndOfMemory
-        regs[0] = regs[operand]
-    elif addr_mode == 3:
-        if operand >= MAX_VAL-1:
-            raise EndOfMemory
-        regs[0] = operand
-    else:
-        raise AddrModeError
+    regs[0] = read_operand(addr_mode, operand)
+    if regs[0] >= MAX_VAL-1:
+        raise EndOfMemory
 
 def jz(addr_mode, operand):
     global ZF
