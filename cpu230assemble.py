@@ -23,15 +23,17 @@ counter=0
 
 binFile = open("prog.bin", "w")
 
-with open("prog.asm") as asm:
+with open(sys.argv[1], "r") as asm:
     for line in asm:
             line = line.split()
-            value = line[0]
+            value = line[0] if len(line) != 0 else -1
             opcode   = ""
             addrmode = ""
             operand  = ""
-        
-            if value.__contains__(":"):               # Is label
+
+            if value == -1:
+                continue
+            elif value.__contains__(":"):               # Is label
                 operand = hex((counter) * 3)[2:]
                 value=value.replace(":", "")
                 label[value] = operand
@@ -39,42 +41,48 @@ with open("prog.asm") as asm:
                 counter+=1
 
 
-with open("prog.asm") as asmFile:
+with open(sys.argv[1], "r") as asmFile:
             
     for line in asmFile:
         line = line.split() 
-        value = line[0]
+        value = line[0] if len(line) != 0 else -1
         opcode   = ""
         addrmode = ""
         operand  = ""
 
-        if value in instr:          
+        if value == -1:
+            continue
+        elif value in instr:          
             opcode = instr[value]
             isInstr = True                          # Is instruction
         else:
             isInstr = False
 
         if isInstr == True:
-            if value == "HALT":
+            if value == "HALT" or value == "NOP":
                 addressing_mode = "0"
                 operand = "00"
             else:
-                if (re.match("\'(\w)\'", line[1]) != None):         # 'A'
+                if (re.match("\'(.)\'", line[1]) != None):         # 'A'
                     var=line[1][1:-1].encode('utf-8')
                     operand = var.hex()
                     addressing_mode = "0"
                     
                 elif (re.match("\[(\w)\]", line[1]) != None):       # [A]
                     var = line[1][1:-1]
-                    if register.__contains__(var):  
+                    if register.__contains__(var):
                         operand = register[var]
                         addressing_mode = "2"
-                    else:                       
+                    else:                   
                         addressing_mode = "3"
                 elif (re.match("^[ABCDES]$", line[1]) != None):     # A
                     var = line[1]
                     operand = register[var]
                     addressing_mode = "1"
+                elif (re.match("^\[\d+\]$", line[1]) != None):     # A
+                    var = line[1]
+                    operand = var[1:-1]
+                    addressing_mode = "3"    
                 elif label.__contains__(line[1]):
                     var = label[line[1]]
                     addressing_mode = "0"
@@ -85,7 +93,7 @@ with open("prog.asm") as asmFile:
 
         if isInstr is True:
             opcode = int(str(opcode),16) 
-            addressing_mode = int(str(addressing_mode),16)             
+            addressing_mode = int(str(addressing_mode),16)    
             operand  = int(str(operand),16) 
 
             bopcode = format(opcode, '06b')
@@ -95,4 +103,4 @@ with open("prog.asm") as asmFile:
             bin = '0b' + bopcode + baddressing_mode + boperand 
             ibin = int(bin[2:],2) ; 
             result = format(ibin, '06x')
-            binFile.write(result+"\n")          
+            binFile.write(result+"\n")
