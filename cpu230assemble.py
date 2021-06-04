@@ -26,12 +26,12 @@ addressing_mode= ""
 operand=""
 counter=0
 
-binFile = open("prog.bin", "w")
 asm = None
 with open(sys.argv[1], "r") as f:
     asm = f.read()
 asm = asm.split("\n")
 
+binFile = open(sys.argv[1][:-3]+"bin", "w")
 
 # For checking the location of the label and if it's defined before
 for line in asm:       
