@@ -19,7 +19,7 @@ register = {'A':    "0001", 'B':    "0002", "C":    "0003",
 label = {}
     
 
-patterns = ["^\s*(\w+)\s+(\w+)\s*$", "^\s*(\w+)\s+('.*')\s*$", "^\s*(\w+)\s+(\".*\")\s*$", "^\s*(\w+)\s+(\[\w+\])\s*$","^\s*(\w+:)\s*()$","^\s*(\w+)\s*()$"]
+patterns = ["^\s*(\w+)\s+(\w+)\s*$", "^\s*(\w+)\s+('.*')\s*$", "^\s*(\w+)\s+(\".*\")\s*$", "^\s*(\w+)\s+(\[\w+\])\s*$","^\s*(\w+:)\s*()$","^\s*(\w+)\s*()$","^\s*()()$"]
 
 isInstr = True
 addressing_mode= ""
@@ -34,8 +34,7 @@ asm = asm.split("\n")
 
 
 # For checking the location of the label and if it's defined before
-for line in asm:    
-    
+for line in asm:       
     line = line.split()
     value = line[0] if len(line) != 0 else -1    # The whole line is assigned to the value variable. If the line is empty, value is -1
     opcode   = ""
@@ -54,10 +53,29 @@ for line in asm:
     else:                                       # Increments the counter in order to locate the label
         counter+=1
 
-
+counter=0
 for line in asm:
+    syntax=False
+    for i in range(len(patterns)):
+        
+        a = re.search(patterns[i],line)
+        if a:
+            if a.group(2):
+                line = [a.group(1),a.group(2)]
+            else:
+                line = [a.group(1)]
+            syntax = True
+            counter+=1
+            break
+        else:
+            continue
+        
+    if not syntax:
+        print("Syntax Error at Line " + str(counter))
+        break
+        
 
-    line = line.split()
+    #line = line.split()
     value = line[0] if len(line) != 0 else -1
     opcode   = ""
     addrmode = ""
@@ -68,7 +86,6 @@ for line in asm:
         opcode = instr[value]                   # Assigned its opcode
         isInstr = True                          
     else:
-        print(value)
         isInstr = False                   
     
     if isInstr == True:                         # Skips the if block if the line doesn't contain any instruction
